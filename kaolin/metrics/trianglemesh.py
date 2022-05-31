@@ -113,9 +113,10 @@ class _UnbatchedTriangleDistanceCuda(torch.autograd.Function):
     def forward(ctx, points, face_vertices):
         num_points = points.shape[0]
         num_faces = face_vertices.shape[0]
-        min_dist = torch.zeros((num_points), device='cuda', dtype=points.dtype)
-        min_dist_idx = torch.zeros((num_points), device='cuda', dtype=torch.long)
-        dist_type = torch.zeros((num_points), device='cuda', dtype=torch.int32)
+        device = points.device
+        min_dist = torch.zeros((num_points), device=device, dtype=points.dtype)
+        min_dist_idx = torch.zeros((num_points), device=device, dtype=torch.long)
+        dist_type = torch.zeros((num_points), device=device, dtype=torch.int32)
         _C.metrics.unbatched_triangle_distance_forward_cuda(
             points, face_vertices, min_dist, min_dist_idx, dist_type)
         ctx.save_for_backward(points.contiguous(), face_vertices.contiguous(),
